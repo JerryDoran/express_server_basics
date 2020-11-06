@@ -7,7 +7,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(express.json());
 
-// app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, 'views'));
 
@@ -23,7 +23,13 @@ function getWeather(req, res, next) {
 }
 
 app.get('/', getWeather, (req, res) => {
-  res.render('home')
+  res.render('home', {
+    isRaining: req.visitorWeather,
+    pets: [
+      { name: 'meows', species: 'cat' },
+      { name: 'barksalot', species: 'dog' },
+    ],
+  });
 });
 
 app.get('/about', (req, res) => {
@@ -40,6 +46,13 @@ app.post('/result', (req, res) => {
 
 app.get('/result', (req, res) => {
   res.send('Why are you here?');
+});
+
+app.get('/api/pets', (req, res) => {
+  res.json([
+    { name: 'meows', species: 'cat' },
+    { name: 'barksalot', species: 'dog' },
+  ]);
 });
 
 const PORT = process.env.PORT || 3000;
